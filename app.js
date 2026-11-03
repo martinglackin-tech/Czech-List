@@ -1,13 +1,8 @@
 (function () {
-    const { categories, categoryOrder, phrases } = PHRASEBOOK;
+    const { categories, categoryOrder, phrases, speechText } = PHRASEBOOK;
     const $ = (sel, root = document) => root.querySelector(sel);
     const main = $('#main');
     const esc = (s) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-    // ---------- Voice (the phone's built-in Czech voice; works offline) ----------
-    let voices = [];
-    function loadVoices() { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
-    if (window.speechSynthesis) { loadVoices(); speechSynthesis.addEventListener?.('voiceschanged', loadVoices); }
 
     let toastTimer;
     function toast(msg) {
@@ -15,17 +10,131 @@
         clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 3500);
     }
 
-    function speak(text) {
-        if (!window.speechSynthesis) return toast('Speech is not supported on this device.');
-        speechSynthesis.cancel();
+    // ---------- Speed ----------
+    let speed = 'normal'; // 'normal' | 'slow'
+    try { if (localStorage.getItem('ma_czech_speed') === 'slow') speed = 'slow'; } catch (e) {}
+    const speedBtn = $('#speed');
+    function showSpeed() {
+        speedBtn.textContent = speed === 'slow' ? '🐢 Slow' : '🐇 Normal';
+        speedBtn.setAttribute('aria-pressed', String(speed === 'slow'));
+    }
+    speedBtn.onclick = () => {
+        speed = speed === 'slow' ? 'normal' : 'slow';
+        try { localStorage.setItem('ma_czech_speed', speed); } catch (e) {}
+        showSpeed();
+        toast(speed === 'slow' ? 'Slow speech' : 'Normal speed');
+    };
+    showSpeed();
+
+    // ---------- Recordings (play offline, sound the same on every phone) ----------
+    // audio/index.json maps speech text -> { normal, slow } mp3 names; written by tools/generate-audio.mjs.
+    // Files are loaded into blob URLs up front so play() can run synchronously inside the tap
+    // (iOS blocks play() after an await) and are kept in CacheStorage for offline use.
+    const AUDIO_CACHE = 'ma-czech-audio-v1';
+    const recordings = new Map(); // text -> { normal: blobUrl, slow: blobUrl }
+
+    async function loadRecordings() {
+        let cache = null;
+        try { if ('caches' in window) cache = await caches.open(AUDIO_CACHE); } catch (e) {}
+
+        const indexUrl = new URL('audio/index.json', location.href).href;
+        let index;
+        try {
+            const res = await fetch(indexUrl, { cache: 'no-cache' });
+            if (!res.ok) return;
+            if (cache) await cache.put(indexUrl, res.clone());
+            index = await res.json();
+        } catch (e) {
+            try {
+                const cached = cache && await cache.match(indexUrl);
+                if (!cached) return;
+                index = await cached.json();
+            } catch (err) { return; }
+        }
+
+        const wanted = new Set([indexUrl]);
+        for (const [text, files] of Object.entries(index)) {
+            const urls = {};
+            for (const [kind, file] of Object.entries(files)) {
+                const url = new URL(`audio/${file}`, location.href).href;
+                wanted.add(url);
+                try {
+                    let res = cache && await cache.match(url);
+                    if (!res) {
+                        res = await fetch(url);
+                        if (!res.ok) continue;
+                        if (cache) await cache.put(url, res.clone());
+                    }
+                    urls[kind] = URL.createObjectURL(await res.blob());
+                } catch (e) {}
+            }
+            if (urls.normal || urls.slow) recordings.set(text, urls);
+        }
+
+        // Drop recordings from an older index.
+        if (cache) {
+            try {
+                for (const req of await cache.keys()) if (!wanted.has(req.url)) await cache.delete(req);
+            } catch (e) {}
+        }
+    }
+    loadRecordings();
+
+    // ---------- Playback: recording first, phone's Czech voice as the fallback ----------
+    let voices = [];
+    function loadVoices() { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+    if (window.speechSynthesis) { loadVoices(); speechSynthesis.addEventListener?.('voiceschanged', loadVoices); }
+
+    let token = 0, current = null, currentBtn = null;
+    function stop() {
+        token++;
+        if (current) {
+            try { current.onended = current.onerror = null; current.pause(); current.removeAttribute('src'); current.load(); } catch (e) {}
+            current = null;
+        }
+        if (window.speechSynthesis) try { speechSynthesis.cancel(); } catch (e) {}
+        if (currentBtn) { currentBtn.classList.remove('speaking'); currentBtn = null; }
+    }
+    function done(t) {
+        if (t !== token) return;
+        if (currentBtn) currentBtn.classList.remove('speaking');
+        currentBtn = current = null;
+    }
+
+    function speakWithDevice(text, t) {
+        if (!window.speechSynthesis) { toast('Speech is not supported on this device.'); return done(t); }
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'cs-CZ'; u.rate = 0.85;
-        const v = voices.find(v => /^cs([-_]|$)/i.test(v.lang));
+        u.lang = 'cs-CZ'; u.rate = speed === 'slow' ? 0.6 : 0.85;
+        const v = voices.find(v => /^cs([-_]|$)/i.test(v.lang) && (navigator.onLine || v.localService !== false));
         if (v) u.voice = v;
         else if (voices.length) toast('No Czech voice installed. Add one in your phone\'s speech settings.');
+        u.onend = () => done(t);
+        u.onerror = () => done(t);
         speechSynthesis.speak(u);
     }
-    const sayOf = (p) => p.say || p.czech;
+
+    function speak(text, btn) {
+        stop();
+        const t = token;
+        if (btn) { currentBtn = btn; btn.classList.add('speaking'); }
+
+        const rec = recordings.get(text);
+        const src = rec && (speed === 'slow' ? rec.slow || rec.normal : rec.normal || rec.slow);
+        if (!src) return speakWithDevice(text, t);
+
+        // No dedicated slow file: slow the normal one down (pitch is kept).
+        const rate = speed === 'slow' && src === rec.normal ? 0.7 : 1;
+        const audio = new Audio();
+        current = audio;
+        audio.preservesPitch = true;
+        audio.defaultPlaybackRate = audio.playbackRate = rate;
+        audio.onended = () => done(t);
+        audio.onerror = () => { if (t === token) speakWithDevice(text, t); };
+        audio.src = src;
+        const p = audio.play();
+        if (p) p.catch(() => { if (t === token) speakWithDevice(text, t); });
+    }
+    const sayOf = (p) => speechText(p);
 
     // ---------- Overlays ----------
     function openOverlay(el) { el.classList.add('on'); $('[data-body]', el).classList.remove('flip'); }
@@ -39,7 +148,7 @@
         $('#ov-cz').textContent = p.czech;
         $('#ov-sound').textContent = p.sound;
         $('#ov-en').textContent = p.english;
-        $('#ov-say').onclick = () => speak(sayOf(p));
+        $('#ov-say').onclick = (e) => speak(sayOf(p), e.currentTarget);
         openOverlay($('#ov-phrase'));
     }
 
@@ -59,7 +168,7 @@
         }).join('') + `<p class="en" style="margin-top:20px">Tip: tap ⛶ to show a phrase full screen to a waiter. Czech stress is always on the <b>first</b> syllable.</p>`;
         main.onclick = (e) => {
             const b = e.target.closest('button'); if (!b) return;
-            if (b.dataset.say) speak(sayOf(phrases.find(p => p.id == b.dataset.say)));
+            if (b.dataset.say) speak(sayOf(phrases.find(p => p.id == b.dataset.say)), b);
             if (b.dataset.show) showPhrase(phrases.find(p => p.id == b.dataset.show));
         };
     }
