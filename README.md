@@ -1,13 +1,13 @@
 # Martin & Alex's Czech Phrasebook
 
-A tiny offline-capable web app for our Czechia trip: 15 phrases you can hear, show full screen to a waiter, practise as flashcards and test in a quiz.
+A tiny offline-capable web app for our Czechia trip: phrases you can hear, show full screen to a waiter, practise as flashcards and test in a quiz.
 
 Inspired by the Japan phrasebook, but deliberately simpler: no build step, no dependencies (only the optional audio script needs Node 18+).
 
 | File | What it is |
 |---|---|
 | `index.html` | Page, styles and the full-screen overlays |
-| `data.js` | The 15 phrases |
+| `data.js` | The phrases |
 | `app.js` | App logic |
 | `audio/`, `tools/generate-audio.mjs` | Pre-generated recordings and the script that makes them |
 | `fonts/` | Hanken Grotesk (OFL), bundled so it works offline |

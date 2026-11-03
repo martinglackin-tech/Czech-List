@@ -1,5 +1,5 @@
 // Offline support. Bump CACHE when the list of files changes.
-const CACHE = 'ma-czech-v5';
+const CACHE = 'ma-czech-v6';
 // Filled by app.js (loadRecordings); listed here so activate doesn't delete it.
 const AUDIO_CACHE = 'ma-czech-audio-v1';
 const FILES = ['./', 'index.html', 'data.js', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'fonts/hanken-400.ttf', 'fonts/hanken-500.ttf'];

@@ -1,10 +1,11 @@
-// Phrasebook content: exactly 15 phrases. `say` is what the voice reads aloud.
+// Phrasebook content. `say` is what the voice reads aloud.
 (function () {
     const categories = {
         essentials: { name: "Essentials" },
-        dining: { name: "Eating & Drinking" }
+        dining: { name: "Eating & Drinking" },
+        about: { name: "About Us" }
     };
-    const categoryOrder = ["essentials", "dining"];
+    const categoryOrder = ["essentials", "dining", "about"];
 
     // `sound` is a rough English-speaker pronunciation; CAPITALS = stressed syllable
     // (Czech always stresses the first syllable).
@@ -24,7 +25,12 @@
         { id: 12, category: "dining", english: "A beer, please", czech: "Pivo, prosím", sound: "PIH-vo, PRO-seem" },
         { id: 13, category: "dining", english: "It's delicious!", czech: "Je to výborné!", sound: "yeh to VEE-bor-neh" },
         { id: 14, category: "dining", english: "Cheers!", czech: "Na zdraví!", sound: "nah ZDRAH-vee" },
-        { id: 15, category: "dining", english: "The bill, please", czech: "Platit, prosím", sound: "PLAH-tyit, PRO-seem" }
+        { id: 15, category: "dining", english: "The bill, please", czech: "Platit, prosím", sound: "PLAH-tyit, PRO-seem" },
+
+        { id: 16, category: "about", english: "I am from Ireland", czech: "Jsem z Irska", sound: "yih-sem z IR-skah" },
+        { id: 17, category: "about", english: "I am from the UK", czech: "Jsem z Británie", sound: "yih-sem z BRIH-tah-nee-eh" },
+        { id: 18, category: "about", english: "My name is Martin", czech: "Jmenuji se Martin", sound: "YMEH-noo-yih seh MAR-tin" },
+        { id: 19, category: "about", english: "My name is Alex", czech: "Jmenuji se Alex", sound: "YMEH-noo-yih seh AH-leks" }
     ];
 
     // The exact text spoken for a phrase. Recordings are keyed by this string.
