@@ -27,5 +27,10 @@
         { id: 15, category: "dining", english: "The bill, please", czech: "Platit, prosím", sound: "PLAH-tyit, PRO-seem" }
     ];
 
-    globalThis.PHRASEBOOK = { categories, categoryOrder, phrases };
+    // The exact text spoken for a phrase. Recordings are keyed by this string.
+    const speechText = (p) => p.say || p.czech;
+    // Every distinct text that needs a recording (used by tools/generate-audio.mjs).
+    const allSpeechTexts = () => [...new Set(phrases.map(speechText))];
+
+    globalThis.PHRASEBOOK = { categories, categoryOrder, phrases, speechText, allSpeechTexts };
 })();
