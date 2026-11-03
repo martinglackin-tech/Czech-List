@@ -43,20 +43,46 @@
         openOverlay($('#ov-phrase'));
     }
 
+    // ---------- Pieces ----------
+    const icon = (d) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+    const ICON = {
+        say: icon('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>'),
+        show: icon('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
+        check: icon('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
+        cross: icon('<path d="M6 6l12 12M18 6L6 18"/>')
+    };
+    // Pub-tab tally marks: four strokes and a diagonal make five. `total` fixes the width.
+    function tally(n, total = n, label = '') {
+        const groups = Math.max(1, Math.ceil(total / 5)), W = 52, H = 44;
+        let g = '';
+        for (let k = 0; k < groups; k++) {
+            const left = Math.max(0, Math.min(5, n - k * 5)), x0 = k * W + 8;
+            for (let i = 0; i < Math.min(left, 4); i++) g += `<path d="M${x0 + i * 10} 4v36"/>`;
+            if (left === 5) g += `<path d="M${x0 - 6} 32L${x0 + 38} 12"/>`;
+        }
+        return `<svg width="${groups * W}" height="${H}" viewBox="0 0 ${groups * W} ${H}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" role="img" aria-label="${esc(label || n + ' tally marks')}">${g}</svg>`;
+    }
+    const viewHead = (title, sub) => `<header class="viewhead"><h1>${esc(title)}</h1><p class="small">${esc(sub)}</p></header>`;
+
     // ---------- Phrases ----------
-    function phraseRow(p) {
-        return `<li class="row" style="list-style:none">
+    function phraseRow(p, i) {
+        return `<li class="row" style="--i:${i}">
             <div class="txt"><div class="cz" lang="cs">${esc(p.czech)}</div><div class="snd">${esc(p.sound)}</div><div class="en">${esc(p.english)}</div></div>
-            <button class="ib" type="button" data-say="${p.id}" aria-label="Say: ${esc(p.english)}">🔊</button>
-            <button class="ib" type="button" data-show="${p.id}" aria-label="Show full screen: ${esc(p.english)}">⛶</button>
+            <button class="ib say" type="button" data-say="${p.id}" aria-label="Say: ${esc(p.english)}">${ICON.say}</button>
+            <button class="ib" type="button" data-show="${p.id}" aria-label="Show full screen: ${esc(p.english)}">${ICON.show}</button>
         </li>`;
     }
     function renderPhrases() {
-        main.innerHTML = `<p class="eyebrow">15 phrases</p>` + categoryOrder.map(key => {
+        let n = 0;
+        main.innerHTML = `<section class="slip hero">
+                <h1>Czech for Martin &amp; Alex</h1>
+                <p class="lead">Fifteen phrases for Prague. Tap to hear one, hold the screen up to show it.</p>
+                <div class="tally">${tally(phrases.length, phrases.length, phrases.length + ' phrases')}<span class="small">${phrases.length} phrases</span></div>
+            </section>` + categoryOrder.map(key => {
             const c = categories[key];
             const items = phrases.filter(p => p.category === key);
-            return `<h2>${c.icon} ${c.name}</h2><ul class="panel" style="margin:0;padding:0">${items.map(phraseRow).join('')}</ul>`;
-        }).join('') + `<p class="en" style="margin-top:20px">Tip: tap ⛶ to show a phrase full screen to a waiter. Czech stress is always on the <b>first</b> syllable.</p>`;
+            return `<section class="slip"><h2>${c.name}</h2><ul class="rows">${items.map(p => phraseRow(p, n++)).join('')}</ul></section>`;
+        }).join('') + `<section class="field"><p><span class="first">Czech stress is always on the first syllable.</span> Say the capitals loudest and you will be understood.</p></section>`;
         main.onclick = (e) => {
             const b = e.target.closest('button'); if (!b) return;
             if (b.dataset.say) speak(sayOf(phrases.find(p => p.id == b.dataset.say)));
@@ -68,19 +94,18 @@
     let cardIdx = 0, flipped = false;
     function renderCards() {
         const p = phrases[cardIdx];
-        main.innerHTML = `
-        <p class="progress">Card ${cardIdx + 1} of ${phrases.length} · tap the card to flip</p>
-        <button class="flash" type="button" data-act="flip" aria-live="polite">
+        main.innerHTML = viewHead('Flashcards', `Card ${cardIdx + 1} of ${phrases.length}. Tap the card to turn it over.`) + `
+        <button class="card" type="button" data-act="flip" aria-live="polite" aria-label="${flipped ? 'Czech' : 'English'} side. Tap to turn over.">
             ${flipped
-                ? `<div class="cz" lang="cs">${esc(p.czech)}</div><div class="snd">${esc(p.sound)}</div>`
-                : `<div class="en" style="font-size:22px;color:var(--ink)">${esc(p.english)}</div><div class="en">How do you say it in Czech?</div>`}
+                ? `<div class="big" lang="cs">${esc(p.czech)}</div><div class="snd">${esc(p.sound)}</div>`
+                : `<div class="big">${esc(p.english)}</div><div class="small hint">How do you say it in Czech?</div>`}
         </button>
         <div class="btns">
-            <button class="btn" type="button" data-act="prev">← Prev</button>
-            <button class="btn primary" type="button" data-act="say">🔊 Say it</button>
-            <button class="btn" type="button" data-act="next">Next →</button>
+            <button class="btn" type="button" data-act="prev">Back</button>
+            <button class="btn primary" type="button" data-act="say">${ICON.say}Say it</button>
+            <button class="btn" type="button" data-act="next">Next</button>
         </div>
-        <div class="btns"><button class="btn" type="button" data-act="shuffle">🔀 Shuffle deck</button></div>`;
+        <div class="btns"><button class="btn" type="button" data-act="shuffle">Shuffle the deck</button></div>`;
         main.onclick = (e) => {
             const b = e.target.closest('button'); if (!b) return;
             const a = b.dataset.act;
@@ -106,14 +131,16 @@
         if (!quiz) startQuiz();
         if (quiz.i >= quiz.qs.length) {
             const n = quiz.qs.length, s = quiz.score;
-            main.innerHTML = `<div class="center"><h2>${s} / ${n}</h2><p>${s === n ? 'Perfektní! 🎉' : s >= n * 0.7 ? 'Skvělé! Very good.' : 'Keep practising, you\'ll get there.'}</p>
-                <button class="btn blue" type="button" data-act="again">Play again</button></div>`;
+            main.innerHTML = `<section class="slip result"><h1 style="font-size:var(--step-head)">${s} out of ${n}</h1>
+                <p class="lead">${s === n ? 'Perfektní! Every mark counted.' : s >= n * 0.7 ? 'Skvělé! Very good.' : 'Keep practising, you\'ll get there.'}</p>
+                <div class="tally">${tally(s, n, s + ' correct')}</div></section>
+                <div class="btns"><button class="btn primary" type="button" data-act="again">Play again</button></div>`;
         } else {
             const q = quiz.qs[quiz.i];
-            main.innerHTML = `<p class="progress">Question ${quiz.i + 1} of ${quiz.qs.length} · score ${quiz.score}</p>
-                <h2 style="margin-top:0">${esc(q.p.english)}</h2>
-                ${q.options.map((o, k) => `<button class="btn opt" type="button" data-k="${k}" lang="cs">${esc(o.czech)}</button>`).join('')}
-                <div class="btns" id="after" hidden><button class="btn primary" type="button" data-act="say">🔊 Hear it</button><button class="btn blue" type="button" data-act="next">Next →</button></div>`;
+            main.innerHTML = `<p class="progress small">Question ${quiz.i + 1} of ${quiz.qs.length}. ${quiz.score} right so far.</p>
+                <h1 class="q">${esc(q.p.english)}</h1>
+                ${q.options.map((o, k) => `<button class="opt" type="button" data-k="${k}" lang="cs"><span>${esc(o.czech)}</span></button>`).join('')}
+                <div class="btns" id="after" hidden><button class="btn" type="button" data-act="say">${ICON.say}Hear it</button><button class="btn primary" type="button" data-act="next">Next</button></div>`;
         }
         main.onclick = (e) => {
             const b = e.target.closest('button'); if (!b) return;
@@ -123,12 +150,11 @@
             if (b.dataset.act === 'next') { quiz.i++; quiz.answered = false; return renderQuiz(); }
             if (b.dataset.k !== undefined && !quiz.answered) {
                 quiz.answered = true;
-                const picked = q.options[b.dataset.k];
-                const right = picked === q.p;
+                const right = q.options[b.dataset.k] === q.p;
                 if (right) quiz.score++;
                 main.querySelectorAll('.opt').forEach((el, k) => {
-                    if (q.options[k] === q.p) el.classList.add('right');
-                    else if (el === b) el.classList.add('wrong');
+                    if (q.options[k] === q.p) { el.classList.add('right'); el.insertAdjacentHTML('beforeend', ICON.check); }
+                    else if (el === b) { el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', ICON.cross); }
                     el.disabled = true;
                 });
                 $('#after').hidden = false;

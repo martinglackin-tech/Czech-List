@@ -1,8 +1,8 @@
 // Phrasebook content: exactly 15 phrases. `say` is what the voice reads aloud.
 (function () {
     const categories = {
-        essentials: { name: "Essentials", icon: "👋" },
-        dining: { name: "Eating & Drinking", icon: "🍺" }
+        essentials: { name: "Essentials" },
+        dining: { name: "Eating & Drinking" }
     };
     const categoryOrder = ["essentials", "dining"];
 

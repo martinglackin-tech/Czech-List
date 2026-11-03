@@ -9,6 +9,7 @@ Inspired by the Japan phrasebook, but deliberately simpler: no build step, no de
 | `index.html` | Page, styles and the full-screen overlays |
 | `data.js` | The 15 phrases |
 | `app.js` | App logic |
+| `fonts/` | Hanken Grotesk (OFL), bundled so it works offline |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline support and "Add to Home Screen" |
 
 ## Run it

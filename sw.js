@@ -1,6 +1,6 @@
 // Offline support. Bump CACHE when the list of files changes.
-const CACHE = 'ma-czech-v1';
-const FILES = ['./', 'index.html', 'data.js', 'app.js', 'manifest.webmanifest', 'icons/icon.svg'];
+const CACHE = 'ma-czech-v2';
+const FILES = ['./', 'index.html', 'data.js', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'fonts/hanken-400.ttf', 'fonts/hanken-500.ttf'];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
