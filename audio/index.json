@@ -58,5 +58,21 @@
   "Platit, prosím": {
     "normal": "6cc41a9a1d8f.mp3",
     "slow": "a54d1d62a874.mp3"
+  },
+  "Jsem z Irska": {
+    "normal": "f75344523565.mp3",
+    "slow": "90dfad8a6052.mp3"
+  },
+  "Jsem z Británie": {
+    "normal": "850dfbd61283.mp3",
+    "slow": "20b9fbef1c9d.mp3"
+  },
+  "Jmenuji se Martin": {
+    "normal": "b65c6224c7ad.mp3",
+    "slow": "fd2f8750d279.mp3"
+  },
+  "Jmenuji se Alex": {
+    "normal": "600fd89ae7fe.mp3",
+    "slow": "b209b0e9bd44.mp3"
   }
 }
