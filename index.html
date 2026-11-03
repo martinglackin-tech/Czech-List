@@ -93,6 +93,7 @@
 
         /* Flashcards */
         .card { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 10px; width: 100%; min-height: 340px; text-align: left; border: 0; cursor: pointer; background: var(--paper); clip-path: var(--zig); padding: 28px 22px 48px; margin-bottom: 8px; animation: rise .45s cubic-bezier(.2,.7,.2,1) both; }
+        .flash { display: flex; flex-direction: column; justify-content: center; gap: 10px; width: 100%; min-height: 340px; text-align: left; border: 0; border-radius: 0; background: var(--paper); color: var(--ink); clip-path: var(--zig); padding: 28px 22px 48px; margin-bottom: 8px; font: inherit; }
         .card .big { font-weight: 500; font-size: var(--step-head); line-height: 1.08; letter-spacing: -.035em; }
         .card .snd { font-size: var(--step-lead); margin-top: 6px; }
         .card .hint { margin-top: 18px; }
@@ -165,7 +166,7 @@
 
     <div id="toast" role="status" aria-live="polite"></div>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script src="data.js?v=3"></script>
+    <script src="app.js?v=3"></script>
 </body>
 </html>
