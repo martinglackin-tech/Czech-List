@@ -10,6 +10,7 @@ Inspired by the Japan phrasebook, but deliberately simpler: no build step, no de
 | `data.js` | The 15 phrases |
 | `app.js` | App logic |
 | `audio/`, `tools/generate-audio.mjs` | Pre-generated recordings and the script that makes them |
+| `fonts/` | Hanken Grotesk (OFL), bundled so it works offline |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline support and "Add to Home Screen" |
 
 ## Run it
@@ -25,7 +26,7 @@ If you change the file list in `sw.js`, bump `CACHE`.
 
 The app uses the first of these that works:
 
-1. **Recordings** in `audio/` (natural neural voice, same on every phone, play offline). Each phrase has a normal and a natively-synthesised slow version; the 🐢/🐇 button in the header switches between them and remembers the choice.
+1. **Recordings** in `audio/` (natural neural voice, same on every phone, play offline). Each phrase has a normal and a natively-synthesised slow version; the Speed button in the bottom bar switches between them and remembers the choice.
 2. **The phone's built-in Czech voice**, if there's no recording (also used at a slower rate in slow mode).
 
 To create or refresh the recordings, make a Google Cloud API key with the Text-to-Speech API enabled, then run:
