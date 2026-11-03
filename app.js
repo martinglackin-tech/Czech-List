@@ -202,14 +202,16 @@
 
     // ---------- Flashcards ----------
     let cardIdx = 0, flipped = false;
+    const cardLabel = (p, back) => back
+        ? `Czech: ${p.czech}, said ${p.sound}. Tap to turn over.`
+        : `English: ${p.english}. Tap to turn over and see the Czech.`;
     function renderCards() {
         const p = phrases[cardIdx];
         main.innerHTML = viewHead('Flashcards', `Card ${cardIdx + 1} of ${phrases.length}. Tap the card to turn it over.`) + `
-        <button class="card" type="button" data-act="flip" aria-live="polite" aria-label="${flipped ? 'Czech' : 'English'} side. Tap to turn over.">
-            ${flipped
-                ? `<div class="big" lang="cs">${esc(p.czech)}</div><div class="snd">${esc(p.sound)}</div>`
-                : `<div class="big">${esc(p.english)}</div><div class="small hint">How do you say it in Czech?</div>`}
-        </button>
+        <div class="scene"><button class="card${flipped ? ' flipped' : ''}" type="button" data-act="flip" aria-label="${cardLabel(p, flipped)}">
+            <div class="face front"><div class="big">${esc(p.english)}</div><div class="small hint">How do you say it in Czech?</div></div>
+            <div class="face back"><div class="big" lang="cs">${esc(p.czech)}</div><div class="snd">${esc(p.sound)}</div></div>
+        </button></div>
         <div class="btns">
             <button class="btn" type="button" data-act="prev">Back</button>
             <button class="btn primary" type="button" data-act="say">${ICON.say}Say it</button>
@@ -219,7 +221,14 @@
         main.onclick = (e) => {
             const b = e.target.closest('button'); if (!b) return;
             const a = b.dataset.act;
-            if (a === 'flip') { flipped = !flipped; if (flipped) speak(sayOf(p)); }
+            if (a === 'flip') {
+                // Turn the same card over (no re-render) so the CSS transition can animate.
+                flipped = !flipped;
+                b.classList.toggle('flipped', flipped);
+                b.setAttribute('aria-label', cardLabel(p, flipped));
+                if (flipped) speak(sayOf(p));
+                return;
+            }
             else if (a === 'say') return speak(sayOf(p));
             else if (a === 'next') { cardIdx = (cardIdx + 1) % phrases.length; flipped = false; }
             else if (a === 'prev') { cardIdx = (cardIdx - 1 + phrases.length) % phrases.length; flipped = false; }
