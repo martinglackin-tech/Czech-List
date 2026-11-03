@@ -46,7 +46,7 @@
     // ---------- Pieces ----------
     const icon = (d) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
     const ICON = {
-        say: icon('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>'),
+        say: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="2" y="9" width="3.4" height="6" rx="1.7"/><rect x="7.2" y="4" width="3.4" height="16" rx="1.7"/><rect x="12.4" y="7" width="3.4" height="10" rx="1.7"/><rect x="17.6" y="10" width="3.4" height="4" rx="1.7"/></svg>',
         show: icon('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
         check: icon('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
         cross: icon('<path d="M6 6l12 12M18 6L6 18"/>')
