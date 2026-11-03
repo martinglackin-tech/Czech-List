@@ -1,0 +1,12 @@
+{
+    "name": "Martin & Alex's Czech Phrasebook",
+    "short_name": "Czech Phrases",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#faf7f2",
+    "theme_color": "#11457e",
+    "icons": [
+        { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    ]
+}

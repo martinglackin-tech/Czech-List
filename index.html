@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="notranslate" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google" content="notranslate">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Czech Phrases">
+    <meta name="theme-color" content="#11457e">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <title>Martin &amp; Alex's Czech Phrasebook</title>
+    <style>
+        :root {
+            --paper: #faf7f2; --surface: #fff; --ink: #1c1b1a; --muted: #6b6560; --line: #e6e0d8;
+            --blue: #11457e; --red: #d7141a; --green: #2f7d4f; --accent: #11457e;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --paper: #14171c; --surface: #1d2229; --ink: #f1ede7; --muted: #a29b92; --line: #2e353e; --accent: #7fb2ee; --green: #5fc088; }
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+        header { position: sticky; top: 0; z-index: 10; background: var(--blue); color: #fff; padding: env(safe-area-inset-top) 16px 0; }
+        header .bar { max-width: 640px; margin: auto; height: 56px; display: flex; align-items: center; gap: 10px; }
+        header h1 { font-size: 16px; margin: 0; line-height: 1.2; }
+        header small { display: block; font-weight: 400; opacity: .8; font-size: 12px; }
+        .flag { width: 26px; height: 18px; border-radius: 3px; flex: none; background: linear-gradient(#fff 50%, var(--red) 50%); position: relative; overflow: hidden; }
+        .flag::before { content: ""; position: absolute; inset: 0; background: var(--blue); clip-path: polygon(0 0, 55% 50%, 0 100%); border-right: 0; }
+        .pill { border: 0; border-radius: 999px; background: #fff; color: var(--green); font: 600 14px system-ui; padding: 7px 14px; cursor: pointer; }
+        main { max-width: 640px; margin: auto; padding: 16px 16px calc(96px + env(safe-area-inset-bottom)); }
+        nav.tabs { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; background: var(--surface); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: env(safe-area-inset-bottom); }
+        nav.tabs button { background: none; border: 0; padding: 10px 0 8px; font: 500 12px system-ui; color: var(--muted); cursor: pointer; }
+        nav.tabs button span { display: block; font-size: 20px; }
+        nav.tabs button[aria-current="true"] { color: var(--accent); font-weight: 700; }
+        h2 { font-size: 20px; margin: 24px 0 8px; }
+        h2:first-child { margin-top: 0; }
+        .eyebrow { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 6px; }
+        .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+        .row { display: flex; align-items: center; gap: 10px; padding: 14px; border-bottom: 1px solid var(--line); }
+        .row:last-child { border-bottom: 0; }
+        .row .txt { flex: 1; min-width: 0; }
+        .cz { font-size: 20px; font-weight: 700; line-height: 1.25; }
+        .snd { color: var(--accent); font-weight: 600; font-size: 14px; }
+        .en { color: var(--muted); font-size: 14px; }
+        .ib { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); font-size: 18px; cursor: pointer; color: var(--ink); }
+        .ib:active, .btn:active { transform: scale(.95); }
+        .btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 11px 16px; font: 600 15px system-ui; cursor: pointer; }
+        .btn.primary { background: var(--green); border-color: var(--green); color: #fff; }
+        .btn.blue { background: var(--blue); border-color: var(--blue); color: #fff; }
+        .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+        .btns .btn { flex: 1 1 auto; }
+        .list { margin: 0; padding: 14px 18px 14px 36px; font-size: 14.5px; }
+        .list li { margin: 6px 0; }
+        .ok { color: var(--green); } .no { color: var(--red); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+        .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+        .tile b { font-size: 18px; display: block; }
+        details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; margin-top: 12px; }
+        summary { font-weight: 600; cursor: pointer; }
+        .flash { width: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; cursor: pointer; font: inherit; color: var(--ink); }
+        .flash .cz { font-size: 28px; }
+        .center { text-align: center; }
+        .opt { display: block; width: 100%; text-align: left; margin: 8px 0; font-size: 17px; }
+        .opt.right { background: #d9f2e2; border-color: var(--green); color: #14502e; }
+        .opt.wrong { background: #fbdcdc; border-color: var(--red); color: #7a1013; }
+        .overlay { position: fixed; inset: 0; z-index: 50; background: #fff; color: #1c1b1a; display: none; flex-direction: column; height: 100dvh; }
+        .overlay.on { display: flex; }
+        .overlay .top { height: 8px; background: var(--green); flex: none; }
+        .overlay .bar { display: flex; gap: 8px; justify-content: flex-end; padding: max(12px, env(safe-area-inset-top)) 14px 10px; flex: none; }
+        .overlay .bar .btn { background: #fff; color: #1c1b1a; border-color: #d4cec6; padding: 8px 14px; }
+        .overlay .body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; padding: 16px 22px; transition: transform .3s; }
+        .overlay .body.flip { transform: rotate(180deg); }
+        .ov-cz { font-weight: 800; font-size: clamp(34px, 11vw, 78px); line-height: 1.15; text-align: center; }
+        .ov-sub { text-align: center; margin-top: 18px; font-size: clamp(16px, 4.5vw, 26px); color: #11457e; font-weight: 600; }
+        .ov-en { text-align: center; color: #6b6560; font-size: clamp(15px, 4vw, 22px); margin-top: 6px; }
+        #toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 9px 16px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 60; max-width: 90vw; text-align: center; }
+        #toast.on { opacity: 1; }
+        .progress { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+    </style>
+</head>
+<body class="notranslate" translate="no">
+    <header>
+        <div class="bar">
+            <span class="flag" aria-hidden="true"></span>
+            <h1>Martin &amp; Alex<small>Czech phrasebook · česky</small></h1>
+        </div>
+    </header>
+
+    <main id="main"></main>
+
+    <nav class="tabs" aria-label="Sections">
+        <button type="button" data-tab="phrases"><span>📖</span>Phrases</button>
+        <button type="button" data-tab="cards"><span>🃏</span>Cards</button>
+        <button type="button" data-tab="quiz"><span>✅</span>Quiz</button>
+    </nav>
+
+    <!-- Full-screen phrase, for showing someone -->
+    <div id="ov-phrase" class="overlay" role="dialog" aria-modal="true" aria-label="Phrase, full screen">
+        <div class="top"></div>
+        <div class="bar">
+            <button type="button" class="btn" id="ov-say">🔊 Say it</button>
+            <button type="button" class="btn" data-flip>🔄 Flip</button>
+            <button type="button" class="btn" data-close>✕ Close</button>
+        </div>
+        <div class="body" data-body>
+            <div class="ov-cz" id="ov-cz"></div>
+            <div class="ov-sub" id="ov-sound"></div>
+            <div class="ov-en" id="ov-en"></div>
+        </div>
+    </div>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
