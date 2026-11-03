@@ -1,0 +1,62 @@
+{
+  "Dobrý den": {
+    "normal": "f3e34eff9c14.mp3",
+    "slow": "67b317deacc5.mp3"
+  },
+  "Děkuji": {
+    "normal": "03bb4c77d93e.mp3",
+    "slow": "367c5868f3a3.mp3"
+  },
+  "Prosím": {
+    "normal": "e626c5b1ccbf.mp3",
+    "slow": "15eecdf136c7.mp3"
+  },
+  "Promiňte": {
+    "normal": "eb8553de5547.mp3",
+    "slow": "caa08424df14.mp3"
+  },
+  "Ano. Ne.": {
+    "normal": "c2f877b41081.mp3",
+    "slow": "b4d6fdc5599d.mp3"
+  },
+  "Mluvíte anglicky?": {
+    "normal": "36ad44d6ebaf.mp3",
+    "slow": "24b21ac85858.mp3"
+  },
+  "Kde je toaleta?": {
+    "normal": "6fd78f8ccaf1.mp3",
+    "slow": "779f6e583b6d.mp3"
+  },
+  "Stůl pro dva, prosím": {
+    "normal": "48f1e97a8407.mp3",
+    "slow": "77d44481c3d0.mp3"
+  },
+  "Jídelní lístek, prosím": {
+    "normal": "b054f2f5bc80.mp3",
+    "slow": "bb4667cc976d.mp3"
+  },
+  "Dám si tohle, prosím": {
+    "normal": "72314fe22c06.mp3",
+    "slow": "a98a8b320622.mp3"
+  },
+  "Vodu, prosím": {
+    "normal": "b0dbfa375b82.mp3",
+    "slow": "defbb8e4d6bc.mp3"
+  },
+  "Pivo, prosím": {
+    "normal": "ec9acaf21bfc.mp3",
+    "slow": "861ebc88862a.mp3"
+  },
+  "Je to výborné!": {
+    "normal": "d6ca46636ff6.mp3",
+    "slow": "41d7e461d257.mp3"
+  },
+  "Na zdraví!": {
+    "normal": "a16fc5b56600.mp3",
+    "slow": "84e129e80175.mp3"
+  },
+  "Platit, prosím": {
+    "normal": "6cc41a9a1d8f.mp3",
+    "slow": "a54d1d62a874.mp3"
+  }
+}
