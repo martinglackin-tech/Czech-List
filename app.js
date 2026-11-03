@@ -186,7 +186,7 @@
         let n = 0;
         main.innerHTML = `<section class="slip hero">
                 <h1>Czech for Martin &amp; Alex</h1>
-                <p class="lead">Fifteen phrases for Prague. Tap to hear one, hold the screen up to show it.</p>
+                <p class="lead">Phrases for Prague. Tap to hear one, hold the screen up to show it.</p>
                 <div class="tally">${tally(phrases.length, phrases.length, phrases.length + ' phrases')}<span class="small">${phrases.length} phrases</span></div>
             </section>` + categoryOrder.map(key => {
             const c = categories[key];
