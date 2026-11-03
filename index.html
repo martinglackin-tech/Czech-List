@@ -76,6 +76,7 @@
         .ov-en { text-align: center; color: #6b6560; font-size: clamp(15px, 4vw, 22px); margin-top: 6px; }
         #toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 9px 16px; border-radius: 999px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 60; max-width: 90vw; text-align: center; }
         #toast.on { opacity: 1; }
+        .speaking { outline: 3px solid var(--green); outline-offset: 2px; }
         .progress { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
     </style>
 </head>
@@ -84,6 +85,7 @@
         <div class="bar">
             <span class="flag" aria-hidden="true"></span>
             <h1>Martin &amp; Alex<small>Czech phrasebook · česky</small></h1>
+            <button type="button" class="pill" id="speed" aria-pressed="false" aria-label="Speech speed" style="margin-left:auto"></button>
         </div>
     </header>
 
